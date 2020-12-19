@@ -1,0 +1,19 @@
+{
+  "name": "messaging-service",
+  "version": "1.0.0",
+  "description": "messaging service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serhatyavuzyigit/messaging-service.git"
+  },
+  "author": "serhat yavuzyigit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/serhatyavuzyigit/messaging-service/issues"
+  },
+  "homepage": "https://github.com/serhatyavuzyigit/messaging-service#readme"
+}
