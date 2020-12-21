@@ -4,7 +4,8 @@
   "description": "messaging service",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/serhatyavuzyigit/messaging-service/issues"
   },
-  "homepage": "https://github.com/serhatyavuzyigit/messaging-service#readme"
+  "homepage": "https://github.com/serhatyavuzyigit/messaging-service#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.8"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
 }
