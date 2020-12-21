@@ -118,7 +118,7 @@ exports.user_get_all = (req, res, next) => {
         });
 };
 
-exports.user_delete =  (req, res, next) => {  
+exports.user_delete = (req, res, next) => {  
     User.remove({ _id: req.params.userId })
         .exec()
         .then(result => {
