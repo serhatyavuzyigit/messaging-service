@@ -26,7 +26,9 @@ exports.user_signup = (req, res, next) => {
                             _id: mongoose.Types.ObjectId(),
                             email: req.body.email,
                             username: req.body.username,
-                            password: hash
+                            password: hash,
+                            friends: [],
+                            blocks: []
                         });
                         user.save()
                             .then(result => {
@@ -89,6 +91,32 @@ exports.user_login = (req, res, next) => {
         });
 };
 
+exports.user_get_all = (req, res, next) => {
+    User.find()
+        .select('email username friends blocks')
+        .exec()
+        .then(docs => {
+            res.status(200).json({
+                count: docs.length,
+                orders: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        email: doc.email,
+                        username: doc.username,
+                        friends: doc.friends,
+                        blocks: doc.blocks,
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/orders/' + doc._id 
+                        }
+                    }
+                })
+            });
+        })
+        .catch(err => {
+            res.status(500).json({ error: err });
+        });
+};
 
 exports.user_delete =  (req, res, next) => {  
     User.remove({ _id: req.params.userId })
