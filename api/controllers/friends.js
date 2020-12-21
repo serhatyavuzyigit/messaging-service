@@ -3,7 +3,6 @@ const User = require('../models/user');
 exports.friends_add_friends = (req, res, next) => {
     const friendFrom = req.body.friendFrom;
     const friendTo = req.body.friendTo;
-    console.log(friendFrom);
     User.find({ username: friendFrom })
         .exec()
         .then(user => {
