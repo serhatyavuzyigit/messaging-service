@@ -5,12 +5,17 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 exports.user_signup = (req, res, next) => {
 
-    User.find({ email: req.body.email })
+    User.find({
+        $or: [
+            { email: req.body.email },
+            { username: req.body.username }
+        ]
+        })
         .exec()
         .then(user => {
             if (user.length >= 1) {
                 return res.status(409).json({
-                    message: 'Mail exists'
+                    message: 'User exists'
                 });    
             } else {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -20,6 +25,7 @@ exports.user_signup = (req, res, next) => {
                         const user = new User({
                             _id: mongoose.Types.ObjectId(),
                             email: req.body.email,
+                            username: req.body.username,
                             password: hash
                         });
                         user.save()
@@ -41,7 +47,7 @@ exports.user_signup = (req, res, next) => {
 };
 
 exports.user_login = (req, res, next) => {
-    User.find({ email: req.body.email })
+    User.find({ username: req.body.username })
         .exec()
         .then(user => {
             if (user.length < 1) {
@@ -59,6 +65,7 @@ exports.user_login = (req, res, next) => {
                     const token = jwt.sign(
                         {
                             email: user[0].email,
+                            username: user[0].username,
                             userId: user[0]._id
                         },
                         process.env.JWT_KEY,
