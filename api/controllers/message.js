@@ -9,8 +9,6 @@ exports.message_send_message = (req, res, next) => {
     const messageFrom = req.body.messageFrom;
     const messageTo = req.body.messageTo;
 
-    friends = userData.friend;
-    blocks = userData.blocks;
 
     var returnMessage = "";
 
@@ -18,59 +16,70 @@ exports.message_send_message = (req, res, next) => {
         checkFlag = false;
         returnMessage = "Given token is not associated with the user";
     }
-    
-    if((friends.indexOf(messageTo) === -1) || (blocks.indexOf(messageTo) !== -1)) {
-        checkFlag = false;
-        returnMessage = messageTo + " is not in the friends or in the blocks";
-    }
 
-    if(checkFlag) {
-        User.find({ username: messageTo })
-            .exec()
-            .then(usr => {
-                if (usr.length === 0) {
-                    res.status(500).json({
-                        message: messageTo + " is not a valid username"
-                    });    
-                } else {
+    if (checkFlag) {
+        User.find({ username: messageFrom })
+        .exec()
+        .then(user => {
+            friends = user[0].friends;
+            blocks = user[0].blocks;
+            if((friends.indexOf(messageTo)===-1) || (blocks.indexOf(messageTo)!==-1)){
+                res.status(500).json({
+                    message: messageTo + " is not in the friends or in the blocks"
+                });
+            } else {
+                User.find({ username: messageTo })
+                    .exec()
+                    .then(usr => {
+                        if (usr.length === 0) {
+                            res.status(500).json({
+                                message: messageTo + " is not a valid username"
+                            });    
+                        } else {
 
-                    if(usr[0].friends.indexOf(messageFrom) === -1) {
-                        res.status(500).json({
-                            message: messageTo + " and " + messageFrom + " are not friends" 
-                        });     
-                    } else if(usr[0].blocks.indexOf(messageFrom) !== -1){
-                        res.status(500).json({
-                            message: messageTo + " blocked " + messageFrom
-                        }); 
-                    }
-                    else {
-                        const content = req.body.content;
-                        const sendTime = Date(Date.now());
-                    
-                        const msg = new Message({
-                            _id: mongoose.Types.ObjectId(),
-                            from: messageFrom, 
-                            to: messageTo, 
-                            content: content, 
-                            sendTime: sendTime
-                        });
-                        msg.save()
-                            .then(result => {
-                                console.log(result);
-                                res.status(201).json({
-                                    message: "message sent"
+                            if(usr[0].friends.indexOf(messageFrom) === -1) {
+                                res.status(500).json({
+                                    message: messageTo + " and " + messageFrom + " are not friends" 
+                                });     
+                            } else if(usr[0].blocks.indexOf(messageFrom) !== -1){
+                                res.status(500).json({
+                                    message: messageTo + " blocked " + messageFrom
+                                }); 
+                            }
+                            else {
+                                const content = req.body.content;
+                                const sendTime = Date(Date.now());
+                            
+                                const msg = new Message({
+                                    _id: mongoose.Types.ObjectId(),
+                                    from: messageFrom, 
+                                    to: messageTo, 
+                                    content: content, 
+                                    sendTime: sendTime
                                 });
-                            })
-                            .catch(err => {
-                                console.log(err);
-                                res.status(500).json({ error: err });    
-                            });
-                    }
-                }    
-            })
-            .catch(err => {
-                res.status(500).json({ error: err });
-            });
+                                msg.save()
+                                    .then(result => {
+                                        console.log(result);
+                                        res.status(201).json({
+                                            message: "message sent"
+                                        });
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                        res.status(500).json({ error: err });    
+                                    });
+                            }
+                        }    
+                    })
+                    .catch(err => {
+                        res.status(500).json({ error: err });
+                    });
+            }
+
+        })
+        .catch(err => {
+            res.status(500).json({ error: err });
+        });
     } else {
         res.status(500).json({
             message: returnMessage
