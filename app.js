@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const userRoutes = require('./api/routes/user');
 const friendsRoutes = require('./api/routes/friends');
 const blocksRoutes = require('./api/routes/blocks');
+const messageRoutes = require('./api/routes/message');
 
 mongoose.connect(
     'mongodb+srv://dbUser:' + process.env.MONGO_ATLAS_PW + '@general-cluster.r6agm.mongodb.net/' + process.env.MONGO_ATLAS_DB_NAME + '?retryWrites=true&w=majority',
@@ -40,6 +41,7 @@ mongoose.Promise = global.Promise;
 app.use('/user', userRoutes);
 app.use('/friends', friendsRoutes);
 app.use('/blocks', blocksRoutes);
+app.use('/message', messageRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
