@@ -5,6 +5,7 @@ exports.blocks_add_blocks = (req, res, next) => {
     const userData = req.userData;
     const blockFrom = req.body.blockFrom;
     const blockTo = req.body.blockTo;
+
     if (userData.username !== blockFrom) {
         checkFlag = false;
     }
@@ -23,6 +24,12 @@ exports.blocks_add_blocks = (req, res, next) => {
                 .then(user => {
                     if (user[0].blocks.indexOf(blockTo) === -1) {
                         user[0].blocks.push(blockTo);
+                        
+                        const ind = user[0].friends.indexOf(blockTo);
+                        if (ind > -1) {
+                            user[0].friends.splice(ind, 1);
+                        }
+                        
                         user[0].save();
                         res.status(201).json({
                             message: blockFrom + " added " + blockTo + " to his-her blocks list"

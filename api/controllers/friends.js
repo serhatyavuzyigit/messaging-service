@@ -25,6 +25,12 @@ exports.friends_add_friends = (req, res, next) => {
                     if (user[0].friends.indexOf(friendTo) === -1) {
                         user[0].friends.push(friendTo);
                         user[0].save();
+
+                        const ind = user[0].blocks.indexOf(friendTo);
+                        if (ind > -1) {
+                            user[0].blocks.splice(ind, 1);
+                        }
+
                         res.status(201).json({
                             message: friendFrom + " added " + friendTo + " to his-her friends list"
                         });

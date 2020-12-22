@@ -68,7 +68,9 @@ exports.user_login = (req, res, next) => {
                         {
                             email: user[0].email,
                             username: user[0].username,
-                            userId: user[0]._id
+                            userId: user[0]._id, 
+                            friends: user[0].friends,
+                            blocks: user[0].blocks
                         },
                         process.env.JWT_KEY,
                         {
