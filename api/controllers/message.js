@@ -68,7 +68,9 @@ exports.message_send_message = (req, res, next) => {
                     }
                 }    
             })
-            .catch();
+            .catch(err => {
+                res.status(500).json({ error: err });
+            });
     } else {
         res.status(500).json({
             message: returnMessage
