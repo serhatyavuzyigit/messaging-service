@@ -17,76 +17,66 @@ exports.message_send_message = (req, res, next) => {
         returnMessage = "Given token is not associated with the user";
     }
 
-    if (checkFlag) {
-        User.find({ username: messageFrom })
-        .exec()
-        .then(user => {
-            friends = user[0].friends;
-            blocks = user[0].blocks;
-            if((friends.indexOf(messageTo)===-1) || (blocks.indexOf(messageTo)!==-1)){
-                res.status(500).json({
-                    message: messageTo + " is not in the friends or in the blocks"
-                });
-            } else {
-                User.find({ username: messageTo })
-                    .exec()
-                    .then(usr => {
-                        if (usr.length === 0) {
-                            res.status(500).json({
-                                message: messageTo + " is not a valid username"
-                            });    
-                        } else {
+    const userFromArray = await UserService.get_user(friendFrom);
+    const userToArray = await UserService.get_user(friendTo);
+    if (userToArray.length === 0) {
+        checkFlag = false;
+        returnMessage = messageTo + " is not a valid username";
+    }
 
-                            if(usr[0].friends.indexOf(messageFrom) === -1) {
-                                res.status(500).json({
-                                    message: messageTo + " and " + messageFrom + " are not friends" 
-                                });     
-                            } else if(usr[0].blocks.indexOf(messageFrom) !== -1){
-                                res.status(500).json({
-                                    message: messageTo + " blocked " + messageFrom
-                                }); 
-                            }
-                            else {
-                                const content = req.body.content;
-                                const sendTime = Date(Date.now());
+    if (checkFlag) {
+        const userFrom = userFromArray[0];
+        const userTo = userToArray[0];
+
+        fromFriends = userFrom.friends;
+        fromBlocks = userFrom.blocks;
+
+        toFriends = userTo.friends;
+        toBlocks = userTo.blocks;
+
+        if((fromFriends.indexOf(messageTo)===-1) || (fromBlocks.indexOf(messageTo)!==-1)){
+            res.status(500).json({
+                message: messageTo + " is not in the friends or in the blocks"
+            });
+        } else {
+            if(toFriends.indexOf(messageFrom) === -1) {
+                res.status(500).json({
+                    message: messageFrom + " and " + messageTo + " are not friends" 
+                });     
+            } else if(toBlocks.indexOf(messageFrom) !== -1){
+                res.status(500).json({
+                    message: messageTo + " blocked " + messageFrom
+                }); 
+            } else {
+                const content = req.body.content;
+                const sendTime = Date(Date.now());
                             
-                                const msg = new Message({
-                                    _id: mongoose.Types.ObjectId(),
-                                    from: messageFrom, 
-                                    to: messageTo, 
-                                    content: content, 
-                                    sendTime: sendTime
-                                });
-                                msg.save()
-                                    .then(result => {
-                                        console.log(result);
-                                        res.status(201).json({
-                                            message: "message sent"
-                                        });
-                                    })
-                                    .catch(err => {
-                                        console.log(err);
-                                        res.status(500).json({ error: err });    
-                                    });
-                            }
-                        }    
+                const msg = new Message({
+                    _id: mongoose.Types.ObjectId(),
+                    from: messageFrom, 
+                    to: messageTo, 
+                    content: content, 
+                    sendTime: sendTime
+                });
+                msg.save()
+                    .then(result => {
+                            console.log(result);
+                            res.status(201).json({
+                                message: "message sent"
+                            });
                     })
                     .catch(err => {
-                        res.status(500).json({ error: err });
+                            console.log(err);
+                            res.status(500).json({ error: err });    
                     });
             }
+        }
 
-        })
-        .catch(err => {
-            res.status(500).json({ error: err });
-        });
     } else {
         res.status(500).json({
             message: returnMessage
         });
     }
-
-
 };  
 
 exports.message_get_messages = (req, res, next) => {

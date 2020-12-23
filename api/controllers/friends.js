@@ -1,7 +1,9 @@
 const { compare } = require('bcrypt');
 const User = require('../models/user');
+const UserService = require('../service/user');
 
-exports.friends_add_friends = (req, res, next) => {
+
+const friends_add_friends = async function(req, res, next) {
     var checkFlag = true;
     const userData = req.userData;
     const friendFrom = req.body.friendFrom;
@@ -9,51 +11,41 @@ exports.friends_add_friends = (req, res, next) => {
     if (userData.username !== friendFrom) {
         checkFlag = false;
     }
+    const userFromArray = await UserService.get_user(friendFrom);
+    const userToArray = await UserService.get_user(friendTo);
+    var returnMessage = "";
+    if (userToArray.length === 0) {
+        checkFlag = false;
+        returnMessage = friendTo + " is not a valid username";
+    }
 
-    if(checkFlag) {
-        User.find({ username: friendTo })
-        .exec()
-        .then(usr => {
-            if (usr.length === 0) {
-                res.status(500).json({
-                    message: friendTo + " is not a valid username"
-                });    
-            } else {
-                User.find({ username: friendFrom })
-                .exec()
-                .then(user => {
-                    if (user[0].friends.indexOf(friendTo) === -1) {
-                        user[0].friends.push(friendTo);
-                        user[0].save();
+    if (checkFlag) {
+        const userFrom = userFromArray[0];
+        const userTo = userToArray[0];
 
-                        const ind = user[0].blocks.indexOf(friendTo);
-                        if (ind > -1) {
-                            user[0].blocks.splice(ind, 1);
-                        }
-
-                        res.status(201).json({
-                            message: friendFrom + " added " + friendTo + " to his-her friends list"
-                        });
-                    } else {
-                        res.status(200).json({
-                            message: friendFrom + " already added " + friendTo + " to his-her friends list"
-                        });
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    res.status(500).json({ error: err });
-                });
-                    }
-                })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({ error: err });
-        });    
+        if (userFrom.friends.indexOf(userTo) === -1) {
+            userFrom.friends.push(userTo);
+            
+            const ind = userFrom.blocks.indexOf(userTo);
+            if (ind > -1) {
+                userFrom.blocks.splice(ind, 1);
+            }
+            userFrom.save();
+            res.status(201).json({
+                message: friendFrom + " added " + friendTo + " to his-her friends list"
+            });
+        } else {
+            res.status(200).json({
+                message: friendFrom + " already added " + friendTo + " to his-her friends list"
+            });
+        }
     } else {
         res.status(500).json({
-            message: "Given token is not associated with the user"
+            message: returnMessage
         });
     }
-    
-};
+
+
+}    
+
+exports.friends_add_friends = friends_add_friends;
