@@ -16,8 +16,8 @@ const message_send_message = async function (req, res, next) {
         returnMessage = "Given token is not associated with the user";
     }
 
-    const userFromArray = await UserService.get_user(friendFrom);
-    const userToArray = await UserService.get_user(friendTo);
+    const userFromArray = await UserService.get_user(messageFrom);
+    const userToArray = await UserService.get_user(messageTo);
     if (userToArray.length === 0) {
         checkFlag = false;
         returnMessage = messageTo + " is not a valid username";

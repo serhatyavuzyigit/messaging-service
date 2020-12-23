@@ -32,11 +32,11 @@ const blocks_add_blocks = async function(req, res, next) {
             }
             userFrom.save();
             res.status(201).json({
-                message: blockFrom + " added " + blockTo + " to his-her friends list"
+                message: blockFrom + " added " + blockTo + " to his-her blocks list"
             });
         } else {
             res.status(200).json({
-                message: blockFrom + " already added " + blockTo + " to his-her friends list"
+                message: blockFrom + " already added " + blockTo + " to his-her blocks list"
             });
         }
     } else {
