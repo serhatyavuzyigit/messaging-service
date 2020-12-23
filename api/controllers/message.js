@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const UserService = require('../service/user');
 
 const message_send_message = async function (req, res, next) {
- 
     var checkFlag = true;
     const userData = req.userData;
     const messageFrom = req.body.messageFrom;
@@ -38,15 +37,15 @@ const message_send_message = async function (req, res, next) {
                 message: messageTo + " is not in the friends or in the blocks"
             });
         } else {
-            if(toFriends.indexOf(messageFrom) === -1) {
-                res.status(500).json({
-                    message: messageFrom + " and " + messageTo + " are not friends" 
-                });     
-            } else if(toBlocks.indexOf(messageFrom) !== -1){
+            if(toBlocks.indexOf(messageFrom) !== -1){
                 res.status(500).json({
                     message: messageTo + " blocked " + messageFrom
                 }); 
-            } else {
+            } else if(toFriends.indexOf(messageFrom) === -1) {
+                res.status(500).json({
+                    message: messageFrom + " and " + messageTo + " are not friends" 
+                });     
+            }  else {
                 const content = req.body.content;
                 const sendTime = Date(Date.now());
                             
