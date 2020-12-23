@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const UserService = require('../service/user');
 
 const blocks_add_blocks = async function(req, res, next) {
 

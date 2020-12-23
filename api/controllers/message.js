@@ -1,7 +1,6 @@
-const User = require('../models/user');
 const Message = require('../models/message');
 const mongoose = require('mongoose');
-const user = require('../models/user');
+const UserService = require('../service/user');
 
 const message_send_message = async function (req, res, next) {
  
