@@ -1,5 +1,4 @@
 const { compare } = require('bcrypt');
-const User = require('../models/user');
 const UserService = require('../service/user');
 
 
@@ -8,12 +7,14 @@ const friends_add_friends = async function(req, res, next) {
     const userData = req.userData;
     const friendFrom = req.body.friendFrom;
     const friendTo = req.body.friendTo;
+    var returnMessage = "";
     if (userData.username !== friendFrom) {
         checkFlag = false;
+        returnMessage = "given token is not associated with user";
     }
     const userFromArray = await UserService.get_user(friendFrom);
     const userToArray = await UserService.get_user(friendTo);
-    var returnMessage = "";
+    
     if (userToArray.length === 0) {
         checkFlag = false;
         returnMessage = friendTo + " is not a valid username";
@@ -21,12 +22,11 @@ const friends_add_friends = async function(req, res, next) {
 
     if (checkFlag) {
         const userFrom = userFromArray[0];
-        const userTo = userToArray[0];
 
-        if (userFrom.friends.indexOf(userTo) === -1) {
-            userFrom.friends.push(userTo);
+        if (userFrom.friends.indexOf(friendTo) === -1) {
+            userFrom.friends.push(friendTo);
             
-            const ind = userFrom.blocks.indexOf(userTo);
+            const ind = userFrom.blocks.indexOf(friendTo);
             if (ind > -1) {
                 userFrom.blocks.splice(ind, 1);
             }

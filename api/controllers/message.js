@@ -9,7 +9,6 @@ const message_send_message = async function (req, res, next) {
     const messageFrom = req.body.messageFrom;
     const messageTo = req.body.messageTo;
 
-
     var returnMessage = "";
 
     if(userData.username !== messageFrom) {

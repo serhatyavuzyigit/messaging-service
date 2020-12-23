@@ -22,12 +22,11 @@ const blocks_add_blocks = async function(req, res, next) {
 
     if (checkFlag) {
         const userFrom = userFromArray[0];
-        const userTo = userToArray[0];
 
-        if (userFrom.blocks.indexOf(userTo) === -1) {
-            userFrom.blocks.push(userTo);
+        if (userFrom.blocks.indexOf(blockTo) === -1) {
+            userFrom.blocks.push(blockTo);
             
-            const ind = userFrom.friends.indexOf(userTo);
+            const ind = userFrom.friends.indexOf(blockTo);
             if (ind > -1) {
                 userFrom.friends.splice(ind, 1);
             }
