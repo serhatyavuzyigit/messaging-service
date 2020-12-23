@@ -3,7 +3,8 @@ const Message = require('../models/message');
 const mongoose = require('mongoose');
 const user = require('../models/user');
 
-exports.message_send_message = (req, res, next) => {    
+const message_send_message = async function (req, res, next) {
+ 
     var checkFlag = true;
     const userData = req.userData;
     const messageFrom = req.body.messageFrom;
@@ -77,7 +78,7 @@ exports.message_send_message = (req, res, next) => {
             message: returnMessage
         });
     }
-};  
+}  
 
 exports.message_get_messages = (req, res, next) => {
     const username = req.params.username;
@@ -107,3 +108,4 @@ exports.message_get_messages = (req, res, next) => {
         });
 };
 
+exports.message_send_message = message_send_message;

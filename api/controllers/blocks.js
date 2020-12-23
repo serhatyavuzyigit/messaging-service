@@ -1,6 +1,7 @@
 const User = require('../models/user');
 
-exports.blocks_add_blocks = (req, res, next) => {
+const blocks_add_blocks = async function(req, res, next) {
+
     var checkFlag = true;
     const userData = req.userData;
     const blockFrom = req.body.blockFrom;
@@ -46,4 +47,6 @@ exports.blocks_add_blocks = (req, res, next) => {
     }
 
 
-};
+}
+
+exports.blocks_add_blocks = blocks_add_blocks;
