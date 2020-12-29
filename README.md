@@ -73,4 +73,4 @@
             - If "messageTo" blocked you then app will give you an error.
     - When you want to see your old messages you give your username to request parameter. Also you should give your 
       token to request header with "Authorization" key otherwise the request won't work.
-      You need to GET to this request: http://localhost:3000/friends/yourusername
+      You need to GET to this request: http://localhost:3000/message/yourusername
