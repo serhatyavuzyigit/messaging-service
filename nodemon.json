@@ -1,7 +1,7 @@
 {
     "env": {
-        "MONGO_ATLAS_PW": "Serhat0206",
-        "MONGO_ATLAS_DB_NAME": "general-cluster",
-        "JWT_KEY": "topsecret"
+        "MONGO_ATLAS_PW": "<mongo-password>",
+        "MONGO_ATLAS_DB_NAME": "<cluster-name>",
+        "JWT_KEY": "<jwt-key>"
     }
 }
